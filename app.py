@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import render_template, redirect
+from flask import render_template, redirect, request, flash
 from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import DataRequired
@@ -41,6 +41,18 @@ def add_singer():
         return redirect('/')
 
     return render_template('add_singer.html', form=form, pageTitle='Add A New Singer')
+
+@app.route('/delete_singer/<int:singerid>', methods=['GET','POST'])
+def delete_singer(singerid):
+    if request.method == 'POST': #if it's a POST request, delete the friend from the database
+        obj = zzhijie_singersapp.query.filter_by(singerid=singerid).first()
+        db.session.delete(obj)
+        db.session.commit()
+        flash('Singer was successfully deleted!')
+        return redirect("/")
+
+    else: #if it's a GET request, send them to the home page
+        return redirect("/")
 
 
 
